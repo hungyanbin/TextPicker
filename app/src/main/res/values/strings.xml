@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TextPicker</string>
+    <string name="image_check">Check</string>
 </resources>
