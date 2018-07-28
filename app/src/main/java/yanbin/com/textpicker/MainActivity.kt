@@ -1,5 +1,6 @@
 package yanbin.com.textpicker
 
+import android.arch.lifecycle.Observer
 import android.graphics.Typeface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.architecture.ext.getViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,8 +24,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupRecycleView(){
+        val viewModel = getViewModel<FontPickerViewModel>()
         val fontAdapter = FontAdapter()
-        fontAdapter.fonts = listOf("Abc", "cde", "def", "ii", "fawjef", "cwe")
+        viewModel.fonts.observe(this, Observer {
+            fontAdapter.fonts = it!!
+            fontAdapter.notifyDataSetChanged()
+        })
         recycleFonts.adapter = fontAdapter
         recycleFonts.layoutManager = LinearLayoutManager(this)
         recycleFonts.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
