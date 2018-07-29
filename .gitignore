@@ -7,4 +7,5 @@
 .DS_Store
 /build
 /captures
+/app/src/main/res/values/keys.xml
 .externalNativeBuild

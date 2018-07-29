@@ -7,6 +7,6 @@ class PickerApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        startKoin(this, modules = listOf(viewModelModule))
+        startKoin(this, modules = listOf(fontModule))
     }
 }

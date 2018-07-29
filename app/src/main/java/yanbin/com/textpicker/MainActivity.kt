@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         val fontRequest = FontRequest("com.google.android.gms.fonts",
                 "com.google.android.gms",
-                "name=Oswald",
+                "name=Alegreya Sans SC",
                 R.array.com_google_android_gms_fonts_certs)
 
         val fontCallback = object : FontsContractCompat.FontRequestCallback() {
