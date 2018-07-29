@@ -1,4 +1,4 @@
-package yanbin.com.textpicker
+package yanbin.com.textpicker.presentation
 
 import android.arch.lifecycle.Observer
 import android.graphics.Typeface
@@ -13,6 +13,8 @@ import android.support.v7.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.architecture.ext.getViewModel
 import org.koin.android.ext.android.setProperty
+import yanbin.com.textpicker.INJECT_KEY_CONTEXT
+import yanbin.com.textpicker.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +30,9 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecycleView(){
         val viewModel = getViewModel<FontPickerViewModel>()
         val fontAdapter = FontAdapter()
+        fontAdapter.onItemClicked = {
+            viewModel.onFontSelected(it)
+        }
         viewModel.fonts.observe(this, Observer {
             fontAdapter.fonts = it!!
             fontAdapter.notifyDataSetChanged()
