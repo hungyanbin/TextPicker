@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.architecture.ext.getViewModel
+import org.koin.android.ext.android.setProperty
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        injectProperties()
         getFont()
         setupRecycleView()
     }
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFont() {
+        //TODO check document about handler
         val handler = Handler()
 
         val fontRequest = FontRequest("com.google.android.gms.fonts",
@@ -50,5 +53,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         FontsContractCompat.requestFont(this, fontRequest, fontCallback, handler)
+    }
+
+    private fun injectProperties() {
+        setProperty(INJECT_KEY_CONTEXT, this)
     }
 }
