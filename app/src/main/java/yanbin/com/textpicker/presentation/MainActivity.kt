@@ -18,18 +18,19 @@ import yanbin.com.textpicker.R
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var fontAdapter: FontAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         injectProperties()
-        getFont()
         setupRecycleView()
+        bindViewModel()
     }
 
-    private fun setupRecycleView(){
+    private fun bindViewModel(){
         val viewModel = getViewModel<FontPickerViewModel>()
-        val fontAdapter = FontAdapter()
         fontAdapter.onItemClicked = {
             viewModel.onFontSelected(it)
         }
@@ -37,18 +38,25 @@ class MainActivity : AppCompatActivity() {
             fontAdapter.fonts = it!!
             fontAdapter.notifyDataSetChanged()
         })
+        viewModel.selectedFont.observe(this, Observer {
+            setFont(it!!)
+        })
+    }
+
+    private fun setupRecycleView(){
+        fontAdapter = FontAdapter()
         recycleFonts.adapter = fontAdapter
         recycleFonts.layoutManager = LinearLayoutManager(this)
         recycleFonts.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
     }
 
-    private fun getFont() {
+    private fun setFont(name: String) {
         //TODO check document about handler
         val handler = Handler()
 
         val fontRequest = FontRequest("com.google.android.gms.fonts",
                 "com.google.android.gms",
-                "name=Alegreya Sans SC",
+                "name=$name",
                 R.array.com_google_android_gms_fonts_certs)
 
         val fontCallback = object : FontsContractCompat.FontRequestCallback() {
