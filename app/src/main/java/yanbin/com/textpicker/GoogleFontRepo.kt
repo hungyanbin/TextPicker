@@ -6,28 +6,15 @@ import android.util.Log
 import com.beust.klaxon.JsonReader
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import yanbin.com.textpicker.network.ApiService
 import java.io.StringReader
 
 private const val URL_GOOGLE_FONTS = "https://www.googleapis.com/webfonts/v1/webfonts?key="
 
-class GoogleFontRepo(private val context: Context) : FontRepo {
+class GoogleFontRepo(private val context: Context, private val apiService: ApiService) : FontRepo {
 
-    private val client = OkHttpClient()
     private val mutableFonts = MutableLiveData<List<String>>()
     private val _fonts = mutableListOf<String>()
-
-    private fun executeRequest(url: String): String {
-        //TODO needs to handle error
-        val request = Request.Builder()
-                .url(url)
-                .build()
-
-        val response = client.newCall(request)
-                .execute()
-        return response.body()!!.string()
-    }
 
     override fun getAllFonts(): MutableLiveData<List<String>> {
         launch(CommonPool) { startGetFonts() }
@@ -36,7 +23,7 @@ class GoogleFontRepo(private val context: Context) : FontRepo {
 
     private fun startGetFonts(){
         val url = URL_GOOGLE_FONTS + context.getString(R.string.KEY_FONT)
-        val fontResponse = executeRequest(url)
+        val fontResponse = apiService.call(url)
 
         //TODO needs to handle null
         JsonReader(StringReader(fontResponse)).use { reader ->
