@@ -8,8 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_font.view.*
 import yanbin.com.textpicker.R
+import yanbin.com.textpicker.TypeFaceHelper
 
-class FontAdapter : ListAdapter<String, FontViewHolder>(DIFF_CALLBACK) {
+class FontAdapter(private val typeFaceHelper: TypeFaceHelper) : ListAdapter<String, FontViewHolder>(DIFF_CALLBACK) {
 
     var onItemClicked: (String) -> Unit = {}
     private var selectedIndex: Int = 0
@@ -37,6 +38,8 @@ class FontAdapter : ListAdapter<String, FontViewHolder>(DIFF_CALLBACK) {
                 holder.imageCheck.visibility = View.VISIBLE
                 lastSelectView = holder.imageCheck
             }
+
+            typeFaceHelper.setTypeFace(holder.txtName, item)
         }
     }
 

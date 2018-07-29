@@ -15,4 +15,7 @@ val fontModule = applicationContext {
     factory { GoogleFontRepo(getProperty(INJECT_KEY_CONTEXT), get()) as FontRepo }
 
     bean { OkhttpApiService() as ApiService }
+
+    bean { TypeFaceHelper(getProperty(INJECT_KEY_CONTEXT)) }
+
 }
