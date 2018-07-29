@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.onFontSelected(it)
         }
         viewModel.fonts.observe(this, Observer {
-            fontAdapter.fonts = it!!
+            fontAdapter.submitList(it!!)
             fontAdapter.notifyDataSetChanged()
         })
         viewModel.selectedFont.observe(this, Observer {

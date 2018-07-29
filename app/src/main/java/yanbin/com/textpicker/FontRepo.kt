@@ -1,6 +1,8 @@
 package yanbin.com.textpicker
 
+import android.arch.lifecycle.MutableLiveData
+
 interface FontRepo{
 
-    suspend fun getAllFonts(): List<String>
+    fun getAllFonts(): MutableLiveData<List<String>>
 }
