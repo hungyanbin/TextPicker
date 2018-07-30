@@ -2,19 +2,23 @@ package yanbin.com.textpicker.network
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import yanbin.com.textpicker.NetworkFailException
 
 class OkhttpApiService: ApiService{
 
     private val client = OkHttpClient()
 
     override fun call(url: String): String {
-        //TODO needs to handle error
         val request = Request.Builder()
                 .url(url)
                 .build()
 
         val response = client.newCall(request)
                 .execute()
-        return response.body()!!.string()
+        if(response.isSuccessful){
+            return response.body()!!.string()
+        }else{
+            throw NetworkFailException("error code : ${response.code()}")
+        }
     }
 }

@@ -6,15 +6,23 @@ import android.util.Log
 import com.beust.klaxon.JsonReader
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
+import org.json.JSONException
 import yanbin.com.textpicker.network.ApiService
+import java.io.IOException
 import java.io.StringReader
 
 private const val URL_GOOGLE_FONTS = "https://www.googleapis.com/webfonts/v1/webfonts?key="
+private const val PAGE_SIZE = 50
 
 class GoogleFontRepo(private val context: Context, private val apiService: ApiService) : FontRepo {
 
     private val mutableFonts = MutableLiveData<List<String>>()
     private val _fonts = mutableListOf<String>()
+    private val _errorMessage = MutableLiveData<String>()
+
+    override fun getErrorMessage(): MutableLiveData<String> {
+        return _errorMessage
+    }
 
     override fun getAllFonts(): MutableLiveData<List<String>> {
         launch(CommonPool) { startGetFonts() }
@@ -23,9 +31,20 @@ class GoogleFontRepo(private val context: Context, private val apiService: ApiSe
 
     private fun startGetFonts(){
         val url = URL_GOOGLE_FONTS + context.getString(R.string.KEY_FONT)
-        val fontResponse = apiService.call(url)
+        try {
+            val fontResponse = apiService.call(url)
+            parseResponse(fontResponse)
+        } catch (e: NetworkFailException) {
+            _errorMessage.postValue(e.message)
+        } catch (e: IOException){
+            _errorMessage.postValue(context.getString(R.string.error_no_network))
+        } catch (e: Exception){
+            _errorMessage.postValue(context.getString(R.string.error_unknown))
+        }
 
-        //TODO needs to handle null
+    }
+
+    private fun parseResponse(fontResponse: String) {
         JsonReader(StringReader(fontResponse)).use { reader ->
             reader.beginObject {
 
@@ -43,6 +62,7 @@ class GoogleFontRepo(private val context: Context, private val apiService: ApiSe
         }
     }
 
+
     private fun parseItems(reader: JsonReader) {
         reader.beginArray {
             while (reader.hasNext()) {
@@ -58,12 +78,11 @@ class GoogleFontRepo(private val context: Context, private val apiService: ApiSe
                             "version" -> reader.nextString()
                             "lastModified" -> reader.nextString()
                             "files" -> reader.nextObject()
-                            //TODO
-                            else -> RuntimeException()
+                            else -> JSONException("Unknown name: $readName")
                         }
                     }
                 }
-                if(_fonts.size == 50 || _fonts.size % 100 == 0){
+                if(_fonts.size == PAGE_SIZE || _fonts.size % PAGE_SIZE == 0){
                     Log.i("testt", "postValue")
                     mutableFonts.postValue(_fonts)
                 }

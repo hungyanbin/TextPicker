@@ -3,9 +3,11 @@ package yanbin.com.textpicker.presentation
 import android.arch.lifecycle.Observer
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.architecture.ext.getViewModel
 import org.koin.android.ext.android.inject
@@ -39,6 +41,11 @@ class MainActivity : AppCompatActivity() {
         })
         viewModel.selectedFont.observe(this, Observer {
             typeFaceHelper.setTypeFace(txtSample, it!!)
+        })
+
+        val rootView = findViewById<View>(android.R.id.content)
+        viewModel.errorMessage.observe(this, Observer {
+            Snackbar.make(rootView, it!!, Snackbar.LENGTH_LONG).show()
         })
     }
 
