@@ -13,7 +13,7 @@ class FontAdapter(private val typeFaceHelper: TypeFaceHelper) : RecyclerView.Ada
 
     var items = listOf<FontFamily>()
     var onItemClicked: (String) -> Unit = {}
-    private var selectedIndex: Int = 0
+    private var selectedFont: String = ""
     private var lastSelectView: View? = null
 
     override fun getItemCount(): Int {
@@ -27,23 +27,29 @@ class FontAdapter(private val typeFaceHelper: TypeFaceHelper) : RecyclerView.Ada
     override fun onBindViewHolder(holder: FontViewHolder, position: Int) {
         val item = items[position]
         with(holder) {
-            holder.txtName.text = item.family
-            if (selectedIndex == position) {
-                holder.imageCheck.visibility = View.VISIBLE
-                lastSelectView = holder.imageCheck
+            progressFont.visibility = View.VISIBLE
+            txtName.visibility = View.INVISIBLE
+
+            txtName.text = item.family
+            if (selectedFont == item.family) {
+                imageCheck.visibility = View.VISIBLE
+                lastSelectView = imageCheck
             } else {
-                holder.imageCheck.visibility = View.INVISIBLE
+                imageCheck.visibility = View.INVISIBLE
             }
 
-            holder.itemView.setOnClickListener {
+            itemView.setOnClickListener {
                 onItemClicked(item.family)
                 lastSelectView?.visibility = View.INVISIBLE
-                selectedIndex = holder.adapterPosition
-                holder.imageCheck.visibility = View.VISIBLE
-                lastSelectView = holder.imageCheck
+                selectedFont = item.family
+                imageCheck.visibility = View.VISIBLE
+                lastSelectView = imageCheck
             }
 
-            typeFaceHelper.setTypeFace(holder.txtName, item.family)
+            typeFaceHelper.setTypeFace(txtName, item.family, {
+                txtName.visibility = View.VISIBLE
+                progressFont.visibility = View.INVISIBLE
+            })
         }
     }
 }
@@ -51,6 +57,7 @@ class FontAdapter(private val typeFaceHelper: TypeFaceHelper) : RecyclerView.Ada
 class FontViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val txtName = itemView.txtName!!
     val imageCheck = itemView.imageCheck!!
+    val progressFont = itemView.progressFont!!
 }
 
 fun inflateView(resource: Int, parent: ViewGroup): View {

@@ -6,6 +6,7 @@
     <string name="menu_sort_by_lastModified">sort by lastModified</string>
     <string name="error_no_network">請檢查你的網路連線！</string>
     <string name="error_unknown">發生未知錯誤！請聯絡開發人員</string>
+    <string name="error_font_not_found">Font not found!!</string>
 
     <array name="com_google_android_gms_fonts_certs">
         <item>@array/com_google_android_gms_fonts_certs_dev</item>
