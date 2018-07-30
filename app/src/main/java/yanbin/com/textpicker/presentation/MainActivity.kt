@@ -7,6 +7,8 @@ import android.support.design.widget.Snackbar
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.architecture.ext.getViewModel
@@ -19,6 +21,7 @@ import yanbin.com.textpicker.TypeFaceHelper
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fontAdapter: FontAdapter
+    private lateinit var viewModel: FontPickerViewModel
     private val typeFaceHelper: TypeFaceHelper by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindViewModel(){
-        val viewModel = getViewModel<FontPickerViewModel>()
+        viewModel = getViewModel()
         fontAdapter.onItemClicked = {
             viewModel.onFontSelected(it)
         }
@@ -58,5 +61,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun injectProperties() {
         setProperty(INJECT_KEY_CONTEXT, this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_rest_list, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_sort_by_family -> viewModel.sortFontByFamily()
+            R.id.menu_sort_by_lastModified -> viewModel.sortFontByLastModified()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

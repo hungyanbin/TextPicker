@@ -9,8 +9,9 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_font.view.*
 import yanbin.com.textpicker.R
 import yanbin.com.textpicker.TypeFaceHelper
+import yanbin.com.textpicker.domain.FontFamily
 
-class FontAdapter(private val typeFaceHelper: TypeFaceHelper) : ListAdapter<String, FontViewHolder>(DIFF_CALLBACK) {
+class FontAdapter(private val typeFaceHelper: TypeFaceHelper) : ListAdapter<FontFamily, FontViewHolder>(DIFF_CALLBACK) {
 
     var onItemClicked: (String) -> Unit = {}
     private var selectedIndex: Int = 0
@@ -23,7 +24,7 @@ class FontAdapter(private val typeFaceHelper: TypeFaceHelper) : ListAdapter<Stri
     override fun onBindViewHolder(holder: FontViewHolder, position: Int) {
         val item = getItem(position)
         with(holder) {
-            holder.txtName.text = item
+            holder.txtName.text = item.family
             if (selectedIndex == position) {
                 holder.imageCheck.visibility = View.VISIBLE
                 lastSelectView = holder.imageCheck
@@ -32,24 +33,24 @@ class FontAdapter(private val typeFaceHelper: TypeFaceHelper) : ListAdapter<Stri
             }
 
             holder.itemView.setOnClickListener {
-                onItemClicked(item)
+                onItemClicked(item.family)
                 lastSelectView?.visibility = View.INVISIBLE
                 selectedIndex = holder.adapterPosition
                 holder.imageCheck.visibility = View.VISIBLE
                 lastSelectView = holder.imageCheck
             }
 
-            typeFaceHelper.setTypeFace(holder.txtName, item)
+            typeFaceHelper.setTypeFace(holder.txtName, item.family)
         }
     }
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<String>(){
-            override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FontFamily>(){
+            override fun areItemsTheSame(oldItem: FontFamily, newItem: FontFamily): Boolean {
                 return oldItem == newItem
             }
 
-            override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+            override fun areContentsTheSame(oldItem: FontFamily, newItem: FontFamily): Boolean {
                 return oldItem == newItem
             }
         }

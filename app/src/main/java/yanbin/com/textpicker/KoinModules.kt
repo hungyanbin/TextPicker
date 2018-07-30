@@ -12,6 +12,8 @@ val fontModule = applicationContext {
 
     viewModel { FontPickerViewModel(get()) }
 
+    factory { FontPickerUseCase(get()) }
+
     factory { GoogleFontRepo(getProperty(INJECT_KEY_CONTEXT), get()) as FontRepo }
 
     bean { OkhttpApiService() as ApiService }

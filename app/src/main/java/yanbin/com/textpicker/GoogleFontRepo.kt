@@ -7,6 +7,7 @@ import com.beust.klaxon.JsonReader
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import org.json.JSONException
+import yanbin.com.textpicker.domain.FontFamily
 import yanbin.com.textpicker.network.ApiService
 import java.io.IOException
 import java.io.StringReader
@@ -16,15 +17,15 @@ private const val PAGE_SIZE = 50
 
 class GoogleFontRepo(private val context: Context, private val apiService: ApiService) : FontRepo {
 
-    private val mutableFonts = MutableLiveData<List<String>>()
-    private val _fonts = mutableListOf<String>()
+    private val mutableFonts = MutableLiveData<List<FontFamily>>()
+    private val _fonts = mutableListOf<FontFamily>()
     private val _errorMessage = MutableLiveData<String>()
 
     override fun getErrorMessage(): MutableLiveData<String> {
         return _errorMessage
     }
 
-    override fun getAllFonts(): MutableLiveData<List<String>> {
+    override fun getAllFonts(): MutableLiveData<List<FontFamily>> {
         launch(CommonPool) { startGetFonts() }
         return mutableFonts
     }
@@ -67,20 +68,23 @@ class GoogleFontRepo(private val context: Context, private val apiService: ApiSe
         reader.beginArray {
             while (reader.hasNext()) {
                 reader.beginObject {
+                    var family = ""
+                    var lastModified = ""
                     while (reader.hasNext()){
                         val readName = reader.nextName()
                         when(readName){
-                            "family" -> _fonts.add(reader.nextString())
+                            "family" -> family = reader.nextString()
                             "kind" -> reader.nextString()
                             "category" -> reader.nextString()
                             "variants" -> reader.nextArray()
                             "subsets" -> reader.nextArray()
                             "version" -> reader.nextString()
-                            "lastModified" -> reader.nextString()
+                            "lastModified" -> lastModified = reader.nextString()
                             "files" -> reader.nextObject()
                             else -> JSONException("Unknown name: $readName")
                         }
                     }
+                    _fonts.add(FontFamily(family, lastModified))
                 }
                 if(_fonts.size == PAGE_SIZE || _fonts.size % PAGE_SIZE == 0){
                     Log.i("testt", "postValue")
