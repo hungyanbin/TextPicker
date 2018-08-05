@@ -11,9 +11,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
-import org.koin.android.architecture.ext.getViewModel
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.setProperty
+import org.koin.android.viewmodel.ext.android.getViewModel
 import yanbin.com.textpicker.INJECT_KEY_CONTEXT
 import yanbin.com.textpicker.R
 import yanbin.com.textpicker.TypeFaceHelper

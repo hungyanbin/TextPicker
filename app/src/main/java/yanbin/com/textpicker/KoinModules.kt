@@ -1,14 +1,14 @@
 package yanbin.com.textpicker
 
-import org.koin.android.architecture.ext.viewModel
-import org.koin.dsl.module.applicationContext
+import org.koin.android.viewmodel.ext.koin.viewModel
+import org.koin.dsl.module.module
 import yanbin.com.textpicker.network.ApiService
 import yanbin.com.textpicker.network.OkhttpApiService
 import yanbin.com.textpicker.presentation.FontPickerViewModel
 
 const val INJECT_KEY_CONTEXT = "context"
 
-val fontModule = applicationContext {
+val fontModule = module {
 
     viewModel { FontPickerViewModel(get()) }
 
@@ -16,8 +16,8 @@ val fontModule = applicationContext {
 
     factory { GoogleFontRepo(getProperty(INJECT_KEY_CONTEXT), get()) as FontRepo }
 
-    bean { OkhttpApiService() as ApiService }
+    single { OkhttpApiService() as ApiService }
 
-    bean { TypeFaceHelper(getProperty(INJECT_KEY_CONTEXT)) }
+    single { TypeFaceHelper(getProperty(INJECT_KEY_CONTEXT)) }
 
 }
